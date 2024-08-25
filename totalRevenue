@@ -1,0 +1,14 @@
+=LAMBDA(startDates, endDates, revenues, year, month, daysInYear, 
+    LET(
+        startDate, DATE(year, month, 1),
+        endDate, EOMONTH(startDate, 0),
+        dateRanges, SEQUENCE(endDate - startDate + 1, 1, startDate, 1),
+        totalRevenue, SUM(
+            MMULT(
+                (--(dateRanges >= TRANSPOSE(startDates))) * (--(dateRanges <= TRANSPOSE(endDates))),
+                revenues / (daysInYear * (endDates - startDates + 1) / 365)
+            )
+        ),
+        totalRevenue
+    )
+)

@@ -1,0 +1,21 @@
+=LAMBDA(startDates; endDates; revenues; year; month; daysInYear; [daysInPeriod];
+   LET(
+       monthStart; DATUM(year; month; 1);
+       monthEnd; KDYŽ(daysInYear = 360; monthStart + 29; EOMONTH(monthStart; 0));
+       dateRanges; SEQUENCE(monthEnd - monthStart + 1; 1; monthStart; 1);
+       dailyRate; KDYŽ(daysInYear = 360;
+                   KDYŽ(JE.ČISLO(daysInPeriod);
+                      revenues / daysInPeriod;
+                      revenues / 30);
+                   revenues / (endDates - startDates + 1)
+                  );
+       totalRevenue; SUMA(
+           (SOUČIN.MATIC(
+               (--(dateRanges >= TRANSPOZICE(startDates))) *
+               (--(dateRanges <= TRANSPOZICE(endDates)));
+               dailyRate
+           ))
+       );
+       totalRevenue
+   )
+)
